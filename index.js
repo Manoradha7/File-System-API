@@ -1,11 +1,14 @@
 import express from "express";
 import fs from "fs";
+import dotenv from 'dotenv';
 
 // create new express app and save it as "app"
 const app = express();
 
+dotenv.config();
+
 // server configuration
-const PORT = 7000;
+const PORT = process.env.PORT;
 
 // make the server listen to requests
 app.listen(PORT, () => console.log("App is Running in PORT :" + PORT));
@@ -13,10 +16,6 @@ app.listen(PORT, () => console.log("App is Running in PORT :" + PORT));
 app.get("/", (req, res) => {
   res.send("File System");
 });
-//data is file created date timestamp
-let data = `${new Date()}`;
-
-let filename = `${new Date().getUTCDate()}`;
 
 // Creating files in File folder
 app.get("/createfile", (request, response) => {
