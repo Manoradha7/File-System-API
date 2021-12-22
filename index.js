@@ -1,39 +1,47 @@
 import express from "express";
-import fs  from 'fs';
+import fs from "fs";
 
 // create new express app and save it as "app"
 const app = express();
 
 // server configuration
-const PORT = 9000;
+const PORT = 7000;
 
 // make the server listen to requests
-app.listen(PORT,()=>console.log("App is Running in PORT :" + PORT));
+app.listen(PORT, () => console.log("App is Running in PORT :" + PORT));
 
-
-app.get("/",(req,res)=>{
-    res.send("File System")
-})
+app.get("/", (req, res) => {
+  res.send("File System");
+});
 //data is file created date timestamp
 let data = `${new Date()}`;
 
-let filename = `${new Date().getUTCDate()}`
+let filename = `${new Date().getUTCDate()}`;
 
-//creating files in files folder
-for(let i=0;i<5;i++){
-    fs.writeFile(`./files/${filename}.txt`,data,(err)=>{
-        console.log(`writing file successfully ${i}`)
-    })
-}
-//read all the text files in that particular folder
-fs.readdir("./files",(err,files)=>{
-    console.log(files);
-})
+// Creating files in File folder
+app.get("/createfile", (request, response) => {
+  //data of the file is when the file is created timestamp
+  let data = new Date();
+  data = data.toISOString().replace(/\:/g, "-");
+  console.log(data);
 
-//read data from created file
-for(let i=0;i<5;i++){
-fs.readFile(`./${filename}.txt`,"utf-8",(err)=>{
-    console.log(data);
-})}
+  //Writefile in files Folder
+  fs.writeFile(`Files/${data}.txt`, data, () => {
+    console.log("File created in folder");
+  });
+  //send the response in window
+  response.send({ msg: "File Created in Files Folder" });
+});
 
-
+// getting files in Files directory
+app.get("/getfiles", (request, response) => {
+    //read files directory
+  fs.readdir("Files", (err, files) => {
+    if (err) {
+      console.log(err);
+      return response.status(404).send(err);
+    } else {
+      return response.send(files);
+    }
+  });
+});
